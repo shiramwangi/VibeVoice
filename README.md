@@ -25,7 +25,7 @@ The model can synthesize speech up to **90 minutes** long with up to **4 distinc
 
 ### 🔥 News
 
-- **[2025-08-26] 🎉 We Opensource the [VibeVoice-7B-Preview](https://huggingface.co/WestZhang/VibeVoice-Large-pt) model weights!**
+- **[2025-08-26] 🎉 We opensourced the [VibeVoice-7B-Preview](https://huggingface.co/WestZhang/VibeVoice-Large-pt) model weights.**
 
 ### 📋 TODO
 
@@ -101,6 +101,30 @@ cd VibeVoice/
 pip install -e .
 ```
 
+### CPU-only quickstart (no NVIDIA GPU)
+
+If you don't have a CUDA environment or flash-attn available, you can still run the demo on CPU. The demo and scripts now auto-fallback to a CPU-safe configuration with eager attention and float32:
+
+```bash
+apt update && apt install -y ffmpeg
+pip install -e .
+
+# Run the Gradio demo on CPU
+python demo/gradio_demo.py --model_path microsoft/VibeVoice-1.5B --device cpu --share
+
+# Or run file-based inference on CPU
+python demo/inference_from_file.py \
+  --model_path microsoft/VibeVoice-1.5B \
+  --txt_path demo/text_examples/1p_abs.txt \
+  --speaker_names Alice \
+  --device cpu --use_eager
+```
+
+Notes:
+- CPU inference is much slower and streaming responsiveness will be limited.
+- The scripts automatically switch to `attn_implementation=eager` and float32 on CPU.
+- If you do have CUDA, the demo will prefer bfloat16 and flash-attn v2 when available.
+
 ## Usages
 
 ### 🚨 Tips
@@ -124,10 +148,10 @@ python demo/gradio_demo.py --model_path WestZhang/VibeVoice-Large-pt --share
 ```bash
 # We provide some LLM generated example scripts under demo/text_examples/ for demo
 # 1 speaker
-python demo/inference_from_file.py --model_path WestZhang/VibeVoice-Large-pt --txt_path demo/text_examples/1p_abs.txt --speaker_names Alice
+python demo/inference_from_file.py --model_path microsoft/VibeVoice-1.5B --txt_path demo/text_examples/1p_abs.txt --speaker_names Alice
 
 # or more speakers
-python demo/inference_from_file.py --model_path WestZhang/VibeVoice-Large-pt --txt_path demo/text_examples/2p_music.txt --speaker_names Alice Yunfan
+python demo/inference_from_file.py --model_path microsoft/VibeVoice-1.5B --txt_path demo/text_examples/2p_music.txt --speaker_names Alice Yunfan
 ```
 
 ## FAQ
